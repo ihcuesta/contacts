@@ -8,7 +8,7 @@
             class="btn btn-primary p-4 dashboard-widget"
           >
             All Products
-            <br>
+            <br />
             <span
               v-if="productsPaginatedData !== null"
               class="badge badge-info"
@@ -34,22 +34,22 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
-import ProductListComponent from "../components/products/list/ProductListComponent.vue";
+import { mapGetters, mapActions } from 'vuex'
+import ProductListComponent from '../components/products/list/ProductListComponent.vue'
 
 export default {
-  name: "Home",
+  name: 'Home',
 
   components: { ProductListComponent },
 
-  computed: { ...mapGetters(["productsPaginatedData"]) },
+  computed: { ...mapGetters(['productsPaginatedData']) },
 
   created() {
-    this.fetchAllProducts(1);
+    this.fetchAllContacts(1)
   },
 
   methods: {
-    ...mapActions(["fetchAllProducts"]),
-  },
-};
+    ...mapActions(['fetchAllContacts'])
+  }
+}
 </script>

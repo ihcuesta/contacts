@@ -9,11 +9,14 @@
   },
   "dependencies": {
     "@hennge/vue3-pagination": "^1.0.17",
+    "autoprefixer": "^9.8.8",
     "axios": "^0.27.2",
     "bootstrap-vue": "^2.22.0",
     "core-js": "^3.23.4",
     "font-awesome": "^4.7.0",
     "nprogress": "^0.2.0",
+    "postcss": "^7.0.39",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.17",
     "vee-validate": "^4.6.0",
     "vue": "^3.2.37",
     "vue-fragment": "^1.6.0",
@@ -33,7 +36,7 @@
     "eslint-plugin-vue": "^9.2.0",
     "node-sass": "^7.0.1",
     "sass": "^1.53.0",
-    "sass-loader": "^13.0.2"
+    "sass-loader": "^10"
   },
   "eslintConfig": {
     "root": true,

@@ -1,89 +1,165 @@
 <template>
-  <div class="container">
-    <div class="row justify-content-center mt-2 mb-2">
-      <div class="col-8">
-        <h4 class="text-left mb-2">All Products</h4>
-      </div>
-      <div class="col-4">
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Search Products..."
-          @input="searchProducts"
-          v-model="query.search"
-        />
-      </div>
+  <product-edit-component
+    :showing="exampleModalShowing"
+    :editContactId="editContactId"
+    @close="exampleModalShowing = false"
+  ></product-edit-component>
+  <div v-if="isLoading" class="text-center mt-5 mb-5">
+    Loading Contacts...
+    <div class="spinner-grow" role="status">
+      <span class="sr-only">Loading...</span>
     </div>
-    <div class="">
-      <div class="" v-if="!isLoading">
-        <div class="row border-bottom border-top p-2 bg-light">
-          <div class="col-1">Sl</div>
-          <div class="col-3">Product Name</div>
-          <div class="col-2">Product Price</div>
-          <div class="col-3">Uploaded By</div>
-          <div class="col-2">Actions</div>
-        </div>
+  </div>
+  <div
+    v-if="!isLoading"
+    class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto"
+  >
+    <div class="inline-block min-w-full shadow-md rounded-lg overflow-hidden">
+      <table class="min-w-full leading-normal">
+        <thead>
+          <tr>
+            <th
+              class="px-5 py-3 border-b-2 border-green-200 bg-black text-center text-xs font-semibold text-white uppercase tracking-wider"
+            >
+              Name
+            </th>
+            <th
+              class="px-5 py-3 border-b-2 border-green-200 bg-black text-left text-xs font-semibold text-white uppercase tracking-wider"
+            >
+              Company
+            </th>
+            <th
+              class="px-5 py-3 border-b-2 border-green-200 bg-black text-left text-xs font-semibold text-white uppercase tracking-wider"
+            >
+              Email
+            </th>
+            <th
+              class="px-5 py-3 border-b-2 border-green-200 bg-black text-left text-xs font-semibold text-white uppercase tracking-wider"
+            >
+              Phone
+            </th>
+            <th
+              class="px-5 py-3 border-b-2 border-green-200 bg-black text-right text-xs font-semibold text-white"
+            >
+              Action
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in contactList" :key="item.id">
+            <td class="px-5 py-1 border-b border-gray-200 bg-white text-sm">
+              <div class="flex">
+                <div class="flex-shrink-0 w-10 h-10">
+                  <svg
+                    class="w-full h-full rounded-full"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </div>
+                <div class="ml-3 py-2">
+                  <p class="text-gray-900 text-center">
+                    {{ item.firstName + ' ' + item.lastName }}
+                  </p>
+                </div>
+              </div>
+            </td>
+            <td class="px-2 py-2 border-b border-gray-200 bg-white text-sm">
+              <p class="text-gray-900 whitespace-no-wrap">{{ item.company }}</p>
+            </td>
+            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+              <p class="text-gray-900 whitespace-no-wrap">{{ item.email }}</p>
+            </td>
+            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+              <p class="text-gray-600 whitespace-no-wrap">{{ item.phone }}</p>
+            </td>
+            <td
+              class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-right"
+            >
+              <button @click="deleteProduct(item.id)" class="delete px-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                  />
+                </svg>
+              </button>
 
-        <div v-for="(item, index) in productsPaginatedData.data" :key="item.id">
-          <product-detail :index="index" :product="item" />
-        </div>
-      </div>
-
-      <div v-if="isLoading" class="text-center mt-5 mb-5">
-        Loading Products...
-        <div class="spinner-grow" role="status">
-          <span class="sr-only">Loading...</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Insert Pagination Part -->
-    <div v-if="productsPaginatedData !== null" class="vertical-center mt-2 mb-5">
-      <v-pagination
-        v-model="query.page"
-        :pages="productsPaginatedData.pagination.total_pages"
-        :range-size="2"
-        active-color="#DCEDFF"
-        @update:modelValue="getResults"
-      />
+              <button @click="editContact(item)" class="px-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                  />
+                </svg>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import ProductDetail from "../list/ProductDetail";
-import VPagination from "@hennge/vue3-pagination";
-
+import ProductEditComponent from "../edit/ProductEditComponent.vue"
 export default {
+  components: {
+    'product-edit-component': ProductEditComponent
+  },
+
   data() {
     return {
-      query: {
-        page: 1,
-        search: "",
-      },
+      exampleModalShowing: false,
+      editContactId: null,
     };
   },
-  components: {
-    ProductDetail,
-    VPagination,
-  },
-  computed: { ...mapGetters(["productList", "productsPaginatedData", "isLoading"]) },
+
+  computed: { ...mapGetters(["contactList", "isLoading"]) },
 
   methods: {
-    ...mapActions(["fetchAllProducts"]),
+    ...mapActions(["fetchAllContacts", "deleteProduct", "fetchDetailProduct"]),
 
     getResults() {
-      this.fetchAllProducts(this.query);
+      this.fetchAllContacts(this.query);
     },
 
     searchProducts() {
-      this.fetchAllProducts(this.query);
+      this.fetchAllContacts(this.query);
+    },
+
+    editContact(id) {
+      this.editContactId = id
+      this.exampleModalShowing = true
+      this.fetchDetailProduct(id)
     },
   },
 
   created() {
-    this.fetchAllProducts(this.query);
+    this.fetchAllContacts(this.query);
   },
 };
 </script>

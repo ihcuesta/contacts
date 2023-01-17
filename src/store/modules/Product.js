@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // initial state
 const state = () => ({
-  products: [],
+  contacts: [],
   productsPaginatedData: null,
   product: null,
   isLoading: false,
@@ -17,7 +17,7 @@ const state = () => ({
 
 // getters
 const getters = {
-  productList: state => state.products,
+  contactList: state => state.contacts,
   productsPaginatedData: state => state.productsPaginatedData,
   product: state => state.product,
   isLoading: state => state.isLoading,
@@ -32,34 +32,14 @@ const getters = {
 
 // actions
 const actions = {
-  async fetchAllProducts({ commit }, query = null) {
-    let page = 1;
-    let search = '';
-    if(query !== null){
-      page = query?.page || 1;
-      search = query?.search || '';
-    }
-
+  async fetchAllContacts({ commit }) {
     commit('setProductIsLoading', true);
-    let url = `${process.env.VUE_APP_API_URL}products?page=${page}`;
-    if (search === null) {
-      url = `${url}?page=${page}`;
-    } else {
-      url = `${process.env.VUE_APP_API_URL}products/view/search?search=${search}&page=${page}`
-    }
+    let url = `${process.env.VUE_APP_API_URL}contacts`;
 
     await axios.get(url)
       .then(res => {
-        const products = res.data.data.data;
-        commit('setProducts', products);
-        const pagination = {
-          total: res.data.data.total,  // total number of elements or items
-          per_page: res.data.data.per_page, // items per page
-          current_page: res.data.data.current_page, // current page (it will be automatically updated when users clicks on some page number).
-          total_pages: res.data.data.last_page // total pages in record
-        }
-        res.data.data.pagination = pagination;
-        commit('setProductsPaginated', res.data.data);
+        const contacts = res.data;
+        commit('setContacts', contacts);
         commit('setProductIsLoading', false);
       }).catch(err => {
         console.log('error', err);
@@ -67,23 +47,15 @@ const actions = {
       });
   },
 
-  async fetchDetailProduct({ commit }, id) {
-    commit('setProductIsLoading', true);
-    await axios.get(`${process.env.VUE_APP_API_URL}products/${id}`)
-      .then(res => {
-        commit('setProductDetail', res.data.data);
-        commit('setProductIsLoading', false);
-      }).catch(err => {
-        console.log('error', err);
-        commit('setProductIsLoading', false);
-      });
+  fetchDetailProduct({ commit }, item) {
+    commit('setProductDetail', item);
   },
 
   async storeProduct({ commit }, product) {
     commit('setProductIsCreating', true);
-    await axios.post(`${process.env.VUE_APP_API_URL}products`, product)
+    await axios.post(`${process.env.VUE_APP_API_URL}contacts`, product)
       .then(res => {
-        commit('saveNewProducts', res.data.data);
+        commit('saveNewProducts', res.data);
         commit('setProductIsCreating', false);
       }).catch(err => {
         console.log('error', err);
@@ -91,30 +63,32 @@ const actions = {
       });
   },
 
-  async updateProduct({ commit }, product) {
+  async updateProduct({ commit, dispatch }, product) {
     commit('setProductIsUpdating', true);
     commit('setProductIsUpdating', true);
-    await axios.post(`${process.env.VUE_APP_API_URL}products/${product.id}?_method=PUT`, product)
+    await axios.put(`${process.env.VUE_APP_API_URL}contacts/${product.id}`, product)
       .then(res => {
-        commit('saveUpdatedProduct', res.data.data);
+        commit('saveUpdatedProduct', res.data)
         commit('setProductIsUpdating', false);
       }).catch(err => {
         console.log('error', err);
         commit('setProductIsUpdating', false);
       });
+      dispatch('fetchAllContacts')
   },
 
 
-  async deleteProduct({ commit }, id) {
+  async deleteProduct({ commit, dispatch }, id) {
     commit('setProductIsDeleting', true);
-    await axios.delete(`${process.env.VUE_APP_API_URL}products/${id}`)
+    await axios.delete(`${process.env.VUE_APP_API_URL}contacts/${id}`)
       .then(res => {
-        commit('setDeleteProduct', res.data.data.id);
+        commit('setDeleteProduct', res.data.id);
         commit('setProductIsDeleting', false);
       }).catch(err => {
         console.log('error', err);
         commit('setProductIsDeleting', false);
       });
+      dispatch('fetchAllContacts')
   },
 
   updateProductInput({ commit }, e) {
@@ -124,8 +98,8 @@ const actions = {
 
 // mutations
 const mutations = {
-  setProducts: (state, products) => {
-    state.products = products
+  setContacts: (state, contacts) => {
+    state.contacts = contacts
   },
 
   setProductsPaginated: (state, productsPaginatedData) => {
@@ -137,7 +111,7 @@ const mutations = {
   },
 
   setDeleteProduct: (state, id) => {
-    state.productsPaginatedData.data.filter(x => x.id !== id);
+    state.contacts.filter(x => x.id !== id);
   },
 
   setProductDetailInput: (state, e) => {

@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue';
-import Helper from '../views/Helper.vue';
 import NProgress from 'nprogress';
 
 const routes = [
@@ -8,11 +7,6 @@ const routes = [
     path: '/',
     name: 'Home',
     component: Home
-  },
-  {
-    path: '/help',
-    name: 'Help',
-    component: Helper
   },
   {
     path: '/about',
@@ -31,11 +25,6 @@ const routes = [
     path: '/products/create',
     name: 'Product Create',
     component: () => import('../views/products/ProductCreate.vue')
-  },
-  {
-    path: '/products/edit/:id',
-    name: 'ProductEdit',
-    component: () => import('../views/products/ProductEdit.vue')
   }
 ]
 

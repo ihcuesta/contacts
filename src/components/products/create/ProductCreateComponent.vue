@@ -2,7 +2,7 @@
   <div class="container">
     <div class="card">
       <div class="card-header">
-        <h6>Add Product</h6>
+        <h6>Add Contact</h6>
       </div>
       <div class="card-body">
         <!-- <form v-on:submit.prevent="onSaveProduct" :validation-schema="schema"> -->
@@ -13,44 +13,74 @@
           <!-- <Form @submit="onSaveProduct" :validation-schema="schema"> -->
           <div class="form-group row my-1">
             <div class="col-6">
-              <label>Product Name:</label>
+              <label>First Name:</label>
               <Field
                 id="title"
-                v-model="product.title"
-                name="title"
+                v-model="product.firstName"
+                name="firstName"
                 type="text"
                 class="form-control"
               />
               <ErrorMessage
-                name="title"
+                name="firstName"
                 class="text-capitalize text-danger"
               />
             </div>
             <div class="col-6">
-              <label>Product Price:</label>
+              <label>Last Name:</label>
               <Field
-                v-model="product.price"
-                name="price"
-                type="number"
+                v-model="product.lastName"
+                name="lastName"
+                type="text"
                 class="form-control"
               />
               <ErrorMessage
-                name="price"
+                name="lastName"
                 class="text-capitalize text-danger"
               />
             </div>
           </div>
           <div class="form-group row my-1">
             <div class="col-12">
-              <label>Product Details:</label>
+              <label>Company</label>
               <Field
-                v-model="product.description"
+                v-model="product.company"
+                name="company"
+                type="text"
+                class="form-control"
+              />
+              <ErrorMessage
+                name="company"
+                class="text-capitalize text-danger"
+              />
+            </div>
+          </div>
+          <div class="form-group row my-1">
+            <div class="col-12">
+              <label>Email</label>
+              <Field
+                v-model="product.email"
                 name="description"
-                as="textarea"
+                type="text"
                 class="form-control"
               />
               <ErrorMessage
                 name="description"
+                class="text-capitalize text-danger"
+              />
+            </div>
+          </div>
+          <div class="form-group row my-1">
+            <div class="col-12">
+              <label>Phone</label>
+              <Field
+                v-model="product.phone"
+                name="phone"
+                type="text"
+                class="form-control"
+              />
+              <ErrorMessage
+                name="phone"
                 class="text-capitalize text-danger"
               />
             </div>
@@ -103,9 +133,11 @@ export default {
   setup() {
     // Define a validation schema
     const schema = yup.object({
-      title: yup.string().required().min(5),
-      price: yup.string().required(),
-      description: yup.string().required().min(5),
+      firstName: yup.string().required(),
+      lastName: yup.string().required(),
+      phone: yup.string().required().min(6),
+      company: yup.string().required(),
+      email: yup.string()
     });
 
     return {
@@ -130,8 +162,6 @@ export default {
           position: "top-end",
           timer: 1000,
         });
-
-        this.$router.push({ name: "Products" });
       }
     },
   },
@@ -139,14 +169,15 @@ export default {
   methods: {
     ...mapActions(["storeProduct"]),
     onSubmit() {
-      const { title, price, description } = this.product;
+      const { firstName, lastName, company, email, phone } = this.product;
       this.storeProduct({
-        title: title,
-        price: price,
-        image: null,
-        description: description,
-        user_id: 1,
+        firstName,
+        lastName,
+        company,
+        email,
+        phone
       });
+      this.$router.push({ path: "/products" });
     },
   },
 };

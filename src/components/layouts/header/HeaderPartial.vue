@@ -2,10 +2,10 @@
   <nav class="navbar navbar-expand navbar-light bg-light sticky-top">
     <div class="container">
       <router-link
-        to="/"
+        to="/products"
         class="navbar-brand"
       >
-        # VueCRUD
+        ivanherranz.com
       </router-link>
       <div class="navbar-nav mr-auto">
         <li class="nav-item">
@@ -13,8 +13,8 @@
             to="/products"
             class="nav-link"
           >
-            <i class="fa fa-shopping-cart" />
-            Products
+            <i class="fa fa-user" />
+            Contacts
           </router-link>
         </li>
         <li class="nav-item">
@@ -32,15 +32,6 @@
           >
             <i class="fa fa-info-circle" />
             About
-          </router-link>
-        </li>
-        <li class="nav-item">
-          <router-link
-            to="/help"
-            class="nav-link"
-          >
-            <i class="fa fa-question-circle" />
-            Help
           </router-link>
         </li>
       </div>

@@ -9,8 +9,8 @@
           <li>Vue JS</li>
           <li>Vuex Store Mangement</li>
           <li>Complete CRUD Application</li>
-          <li>Sweet Alert</li>
-          <li>And Many More...</li>
+          <li>SVG Animations</li>
+          <li>More examples about my skills with SVG in: <a href="https://ivanherranz.com/qapter-landing/">ivanherranz.com</a></li>
         </ul>
       </p>
     </div>

@@ -1,15 +1,23 @@
 <template>
-  <div class="container">
-    <div class="card">
-      <div class="card-header">
-        <h6>Edit Product</h6>
-      </div>
-      <div class="card-body">
-        <VeeForm
-          :validation-schema="schema"
-          @submit="onSubmit"
+  <Transition name="fade">
+    <div
+      v-if="showing"
+      class="modal-mask overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex"
+      @click.self="close"
+    >
+      <div class="relative w-6/12 bg-green-100 shadow-lg rounded-md p-5">
+        <button
+          aria-label="close"
+          class="absolute top-0 right-0 text-4xl text-gray-500 my-2 mx-4"
+          @click.prevent="close"
         >
-          <div v-if="isLoading">
+          ×
+        </button>
+        <form
+        @submit.prevent="onSubmit"
+          class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col my-2"
+        >
+        <div v-if="isLoading">
             <div class="text-center">
               <div
                 class="spinner-border text-primary"
@@ -21,110 +29,117 @@
               Loading Product Details
             </div>
           </div>
-          <div v-if="product !== null && !isLoading">
-            <div class="form-group row">
-              <div class="col-6 my-1">
-                <label>Product Name:</label>
-                <Field
-                  id="title"
-                  name="title"
-                  type="text"
-                  class="form-control"
-                  :value="product.title"
-                  @input="updateProductInputAction"
-                />
-                <ErrorMessage
-                  name="title"
-                  class="text-capitalize text-danger"
-                />
-              </div>
-              <div class="col-6">
-                <label>Product Price:</label>
-                <Field
-                  name="price"
-                  type="number"
-                  class="form-control"
-                  :value="product.price"
-                  @input="updateProductInputAction"
-                />
-                <ErrorMessage
-                  name="price"
-                  class="text-capitalize text-danger"
-                />
-              </div>
-            </div>
-            <div class="form-group row my-1">
-              <div class="col-12">
-                <label>Product Details:</label>
-                <Field
-                  name="description"
-                  as="textarea"
-                  class="form-control"
-                  :value="product.description"
-                  @input="updateProductInputAction"
-                />
-                <ErrorMessage
-                  name="description"
-                  class="text-capitalize text-danger"
-                />
-              </div>
-            </div>
-            <div class="form-group my-3">
-              <router-link
-                to="/products"
-                class="btn btn-secondary mr-2"
+          <div class="-mx-3 md:flex mb-6">
+            <div class="md:w-1/2 px-3 mb-6 md:mb-0">
+              <label
+                class="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2"
+                for="grid-first-name"
               >
-                Cancel
-              </router-link>
+                First Name
+              </label>
               <input
-                v-if="!isUpdating"
-                type="submit"
-                class="btn btn-primary mx-2"
-                value="Save Update"
+                class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-red rounded py-3 px-4 mb-3"
+                id="grid-first-name"
+                type="text"
+                ref="firstName"
+                placeholder="Jane"
+                :value="editContactId.firstName"
+                @input="updateProductInputAction"
+              />
+            </div>
+            <div class="md:w-1/2 px-3">
+              <label
+                class="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2"
+                for="grid-last-name"
               >
-              <button
-                v-if="isUpdating"
-                class="btn btn-primary"
-                type="button"
-                disabled
-              >
-                <span
-                  class="spinner-border spinner-border-sm"
-                  role="status"
-                  aria-hidden="true"
-                />
-                Saving...
-              </button>
+                Last Name
+              </label>
+              <input
+                class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4"
+                ref="lastName"
+                type="text"
+                placeholder="Doe"
+                :value="editContactId.lastName"
+                @input="updateProductInputAction"
+              />
             </div>
           </div>
-        </VeeForm>
+          <div class="-mx-3 md:flex mb-6">
+            <div class="md:w-full px-3">
+              <label
+                class="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2"
+                for="grid-password"
+              >
+                Email
+              </label>
+              <input
+                class="block appearance-none w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 mb-3"
+                ref="email"
+                placeholder="Enter your email"
+                :value="editContactId.email"
+                @input="updateProductInputAction"
+              />
+            </div>
+          </div>
+          <div class="-mx-3 md:flex mb-2">
+            <div class="md:w-1/2 px-3 mb-6 md:mb-0">
+              <label
+                class="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2"
+                for="grid-city"
+              >
+                Phone
+              </label>
+              <input
+                class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4"
+                type="phone"
+                ref="phone"
+                placeholder="017**********"
+                :value="editContactId.phone"
+                @input="updateProductInputAction"
+              />
+            </div>
+
+            <div class="md:w-1/2 px-3">
+              <label
+                class="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2"
+              >
+                Company
+              </label>
+              <input
+                class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4"
+                type="text"
+                ref="company"
+                placeholder="Office Name"
+                :value="editContactId.company"
+                @input="updateProductInputAction"
+              />
+            </div>
+          </div>
+          <button
+            type="submit"
+            class="bg-black my-5 px-4 py-2 text-lg font-semibold tracking-wider text-white rounded hover:bg-green-600 w-4/12"
+          >
+            Submit
+          </button>
+        </form>
       </div>
     </div>
-  </div>
+  </Transition>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import { Field, Form as VeeForm, ErrorMessage } from "vee-validate";
-import * as yup from "yup";
 
 export default {
-  components: {
-    Field,
-    VeeForm,
-    ErrorMessage,
-  },
-  setup() {
-    // Define a validation schema
-    const schema = yup.object({
-      title: yup.string().required().min(5),
-      price: yup.string().required(),
-      description: yup.string().required().min(5),
-    });
-
-    return {
-      schema,
-    };
+  props: {
+    showing: {
+      required: true,
+      type: Boolean,
+    },
+    editContactId: {
+      required: true,
+      type: Object
+    },
   },
 
   data() {
@@ -153,8 +168,7 @@ export default {
   },
 
   created: function () {
-    this.id = this.$route.params.id;
-    this.fetchDetailProduct(this.id);
+    this.fetchDetailProduct(this?.editContactId?.id);
   },
 
   methods: {
@@ -163,21 +177,51 @@ export default {
       "updateProductInput",
       "fetchDetailProduct",
     ]),
+
+    close() {
+      this.$emit('close')
+    },
+
     onSubmit() {
-      const { title, price, description } = this.product;
-      // return false;
-      this.updateProduct({
-        id: this.id,
-        title: title,
-        price: price,
-        image: null,
-        description: description,
-        user_id: 1,
-      });
+      if (
+        this.$refs.firstName.value != '' &&
+        this.$refs.lastName.value != '' &&
+        this.$refs.email.value != '' &&
+        this.$refs.phone.value != '' &&
+        this.$refs.company.value != ''
+      ) {
+        const contact = {
+          id: this.editContactId.id,
+          firstName: this.$refs.firstName.value,
+          lastName: this.$refs.lastName.value,
+          email: this.$refs.email.value,
+          phone: this.$refs.phone.value,
+          company: this.$refs.company.value,
+        }
+        this.updateProduct(contact);
+        this.$emit('close')
+      } else alert('Empty Input not allowed')
     },
     updateProductInputAction(e) {
       this.updateProductInput(e);
-    },
-  },
+    }
+  }
 };
 </script>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.4s;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.modal-mask {
+  z-index: 9998;
+  background-color: rgba(19, 15, 15, 0.5);
+  transition: opacity 0.3s ease;
+}
+</style>

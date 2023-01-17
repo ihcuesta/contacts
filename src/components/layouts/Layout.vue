@@ -1,25 +1,18 @@
 <template>
-  <div id="layout">
-    <HeaderPartial />
-    <div class="main-content">
-      <div class="container mt-3">
-        <router-view />
-      </div>
+  <HeaderPartial />
+  <div class="bg flex p-10 items-center flex-col divide-y divide-black-500">
+    <div class="sm:w-11/12 md:w-7/12 py-5">
+      <router-view />
     </div>
-    <FooterPartial />
   </div>
 </template>
 
 <script>
-import FooterPartial from "./footer/FooterPartial";
-import HeaderPartial from "./header/HeaderPartial";
+import HeaderPartial from './header/HeaderPartial.vue';
+
 
 export default {
-  name: "Layout",
-
-  components: {
-    HeaderPartial,
-    FooterPartial,
-  },
+    name: "Layout",
+    components: { HeaderPartial }
 };
 </script>
